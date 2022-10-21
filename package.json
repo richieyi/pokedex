@@ -8,6 +8,10 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "apollo-server-core": "^3.10.3",
+    "apollo-server-micro": "^3.10.3",
+    "graphql": "^16.6.0",
+    "micro": "^9.4.1",
     "next": "latest",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
