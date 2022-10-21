@@ -67,8 +67,10 @@ export default function Home(props: any) {
       </Head>
 
       <main>
-        <h1>Pokedex</h1>
-        {renderPokemon()}
+        <h1 className="text-2xl">Pokedex</h1>
+        <div className="grid grid-cols-3 gap-2">
+          {renderPokemon()}
+        </div>
       </main>
 
       <footer className={styles.footer}>
