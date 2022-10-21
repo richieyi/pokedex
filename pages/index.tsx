@@ -1,9 +1,34 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from 'next/head';
+import Image from 'next/image';
+import { gql } from '@apollo/client';
+import client from '../apollo-client';
 
-import styles from '@/pages/index.module.css'
+import styles from '@/pages/index.module.css';
 
-export default function Home() {
+export async function getServerSideProps() {
+  const { data } = await client.query({
+    query: gql`
+      query getPokemon {
+        getPokemon {
+          id
+          name
+          sprites {
+            front_default
+          }
+        }
+      }
+    `,
+  });
+
+  return {
+    props: {
+      pokemon: data,
+    },
+  };
+}
+
+export default function Home(props: any) {
+  console.log('p', props.pokemon);
   return (
     <div className={styles.container}>
       <Head>
@@ -23,12 +48,18 @@ export default function Home() {
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
+            <p>
+              Find in-depth information about Next.js features and
+              API.
+            </p>
           </a>
 
           <a href="https://nextjs.org/learn" className={styles.card}>
             <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
+            <p>
+              Learn about Next.js in an interactive course with
+              quizzes!
+            </p>
           </a>
 
           <a
@@ -36,13 +67,17 @@ export default function Home() {
             className={styles.card}
           >
             <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
+            <p>
+              Discover and deploy boilerplate example Next.js
+              projects.
+            </p>
           </a>
 
           <a href="https://vercel.com/new" className={styles.card}>
             <h3>Deploy &rarr;</h3>
             <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
+              Instantly deploy your Next.js site to a public URL with
+              Vercel.
             </p>
           </a>
         </div>
@@ -56,10 +91,15 @@ export default function Home() {
         >
           Powered by{' '}
           <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+            <Image
+              src="/vercel.svg"
+              alt="Vercel Logo"
+              width={72}
+              height={16}
+            />
           </span>
         </a>
       </footer>
     </div>
-  )
+  );
 }
