@@ -19,9 +19,28 @@ export const typeDefs = gql`
     id: ID!
     name: String!
     sprites: Sprite!
+    stats: [Stat!]!
+    types: [Type!]!
   }
 
   type Sprite {
     front_default: String!
+  }
+
+  type Stat {
+    base_stat: Int!
+    stat: StatType!
+  }
+
+  type StatType {
+    name: String!
+  }
+
+  type Type {
+    type: ElementType!
+  }
+
+  type ElementType {
+    name: String!
   }
 `;
