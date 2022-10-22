@@ -1,36 +1,26 @@
 import Head from 'next/head';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { gql } from '@apollo/client';
-import client from '../apollo-client';
+import client from 'graphql/apollo-client';
 
-import styles from '@/pages/index.module.css';
+// import styles from '@/pages/index.module.css';
+import { useState } from 'react';
 
 export async function getServerSideProps() {
   const { data } = await client.query({
     query: gql`
-      # query pokemon {
-      #   pokemon {
-      #     id
-      #     name
-      #     sprites {
-      #       front_default
-      #     }
-      #   }
-      # }
-      # query allPokemon {
-      #   allPokemon {
-      #     results {
-      #       name
-      #       url
-      #     }
-      #   }
-      # }
-      query allPokemonWithData {
-        allPokemonWithData {
-          id
-          name
-          sprites {
-            front_default
+      query allPokemon {
+        allPokemon {
+          count
+          results {
+            url
+            pokemon {
+              id
+              name
+              sprites {
+                front_default
+              }
+            }
           }
         }
       }
@@ -45,51 +35,52 @@ export async function getServerSideProps() {
 }
 
 export default function Home(props: any) {
-  const { allPokemonWithData } = props.pokemon;
-  console.log('p', props.pokemon);
+  const {
+    pokemon: {
+      allPokemon: { results },
+    },
+  } = props;
+  console.log('res', results);
+  const [searchValue, setSearchValue] = useState<string>('');
 
-  function renderPokemon() {
-    return allPokemonWithData?.map((pokemon) => {
-      return (
-        <div key={pokemon.id}>
-          <p>{pokemon.name}</p>
-          <img src={pokemon.sprites.front_default} />
-        </div>
-      );
-    });
+  function renderFiltered() {
+    const filtered = results.filter((result) =>
+      result?.pokemon?.name?.toLowerCase().includes(searchValue)
+    );
+    return filtered.map((result) => (
+      <div
+        key={result.pokemon.name}
+        className="flex flex-col items-center"
+      >
+        <img src={result.pokemon.sprites.front_default} />
+        <p className="text-sm">{result.pokemon.name}</p>
+      </div>
+    ));
   }
 
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <h1 className="text-2xl">Pokedex</h1>
-        <div className="grid grid-cols-3 gap-2">
-          {renderPokemon()}
+        <div className="container flex flex-col items-center gap-4">
+          <h1 className="text-2xl">Pokedex</h1>
+          <input
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            placeholder="Type a name..."
+            className="border border-black rounded px-2 py-1"
+          />
+          <div className="border rounded border-black p-4 grid grid-cols-6 gap-8 max-h-[400px] overflow-y-auto">
+            {renderFiltered()}
+          </div>
         </div>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              width={72}
-              height={16}
-            />
-          </span>
-        </a>
-      </footer>
+      {/* <footer></footer> */}
     </div>
   );
 }
