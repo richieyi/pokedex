@@ -3,7 +3,7 @@ const BASE_URL = 'https://pokeapi.co/api/v2';
 export const resolvers = {
   Query: {
     allPokemon: async () => {
-      const res = await fetch(`${BASE_URL}/pokemon?limit=1`);
+      const res = await fetch(`${BASE_URL}/pokemon?limit=9`);
       const data = await res.json();
       return data;
     },
