@@ -30,6 +30,11 @@ export const typeDefs = gql`
 
   type Genera {
     genus: String!
+    language: Language!
+  }
+
+  type Language {
+    name: String!
   }
 
   type Sprite {

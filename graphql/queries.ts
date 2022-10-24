@@ -23,6 +23,9 @@ export const GET_ALL_POKEMON = gql`
           species {
             genera {
               genus
+              language {
+                name
+              }
             }
           }
           sprites {
