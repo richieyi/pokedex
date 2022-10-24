@@ -1,14 +1,60 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PokemonList from '../PokemonList';
 import SelectedPokemon from '../SelectedPokemon';
 
-function Pokedex(props: any) {
+interface PokedexProps {
+  results: Result[];
+}
+
+interface Result {
+  url: string;
+  pokemon: Pokemon;
+}
+
+interface Pokemon {
+  id: string;
+  name: string;
+  species: Species;
+  sprites: Sprite;
+  stats: Stat[];
+  types: Type[];
+}
+
+interface Species {
+  genera: Genera[];
+}
+
+interface Genera {
+  genus: string;
+}
+
+interface Stat {
+  base_stat: number;
+  stat: StatType;
+}
+
+interface StatType {
+  name: string;
+}
+
+interface Type {
+  type: ElementType;
+}
+
+interface ElementType {
+  name: string;
+}
+interface Sprite {
+  front_default: string;
+}
+
+function Pokedex(props: PokedexProps) {
   const { results } = props;
   console.log('res', results);
 
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null);
-  const filteredByName = results?.filter((result: any) =>
+  const filteredByName = results?.filter((result: Result) =>
     result?.pokemon?.name?.toLowerCase().includes(searchValue)
   );
 

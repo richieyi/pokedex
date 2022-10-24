@@ -21,6 +21,15 @@ export const typeDefs = gql`
     sprites: Sprite!
     stats: [Stat!]!
     types: [Type!]!
+    species: Species!
+  }
+
+  type Species {
+    genera: [Genera!]!
+  }
+
+  type Genera {
+    genus: String!
   }
 
   type Sprite {

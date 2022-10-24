@@ -20,6 +20,11 @@ export const GET_ALL_POKEMON = gql`
               name
             }
           }
+          species {
+            genera {
+              genus
+            }
+          }
           sprites {
             front_default
           }
