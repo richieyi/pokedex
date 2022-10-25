@@ -33,7 +33,7 @@ function Filters(props: FiltersProps) {
   }
 
   function renderTypesDropdown() {
-    const typesMapped = useMemo(() => getTypes(), []);
+    const typesMapped = getTypes();
     const typesKeys = Object.keys(typesMapped);
 
     return (
@@ -78,7 +78,7 @@ function Filters(props: FiltersProps) {
   }
 
   function renderSpeciesDropdown() {
-    const speciesMapped = useMemo(() => getSpecies(), []);
+    const speciesMapped = getSpecies();
     const speciesKeys = Object.keys(speciesMapped);
 
     return (

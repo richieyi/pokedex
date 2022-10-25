@@ -1,9 +1,11 @@
 import { gql } from '@apollo/client';
 
-export const GET_ALL_POKEMON = gql`
-  query GetAllPokemon {
-    allPokemon {
+export const GET_POKEMON = gql`
+  query GetPokemon($url: String) {
+    getPokemon(url: $url) {
       count
+      next
+      previous
       results {
         url
         pokemon {

@@ -7,7 +7,7 @@ function SelectedPokemon(props: any) {
     <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-col items-center">
         <p>{`#${id}. ${name}`}</p>
-        <img src={sprites.front_default} />
+        <img src={sprites.front_default} width="96" height="96" />
       </div>
       <div className="flex justify-between">
         <div className="ml-8">

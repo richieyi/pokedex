@@ -1,17 +1,34 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Filters from '../Filters';
 import PokemonList from '../PokemonList';
 import SelectedPokemon from '../SelectedPokemon';
 import { Result } from '../../pokemon-types';
 import SortByDropdown from '../SortByDropdown';
+import { GET_POKEMON } from 'graphql/queries';
+import { useLazyQuery } from '@apollo/client';
 
 interface PokedexProps {
   results: Result[];
+  count: number;
+  next?: string;
 }
 
 function Pokedex(props: PokedexProps) {
-  const { results } = props;
-  console.log('res', results);
+  const { results, count, next } = props;
+  const [loadedPokemon, setLoadedPokemon] =
+    useState<Result[]>(results);
+  const [nextLink, setNextLink] = useState<string | undefined>(next);
+  const [getMorePokemon, { data, loading, error }] =
+    useLazyQuery(GET_POKEMON);
+
+  useEffect(() => {
+    if (data && !loading && !error) {
+      setLoadedPokemon((loadedPokemon) => {
+        return [...loadedPokemon, ...data?.getPokemon?.results];
+      });
+      setNextLink(data?.getPokemon?.next);
+    }
+  }, [data]);
 
   const [searchValue, setSearchValue] = useState<string>('');
   const [selectedPokemon, setSelectedPokemon] = useState<any>(null);
@@ -19,22 +36,21 @@ function Pokedex(props: PokedexProps) {
   const [speciesFilter, setSpeciesFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
 
-  const filteredResults = results?.filter((result: Result) => {
+  const filteredResults = loadedPokemon?.filter((result: Result) => {
     const nameHasSearchValue = result?.pokemon?.name
       ?.toLowerCase()
       .includes(searchValue);
-    const typeHasTypeValue = result.pokemon.types.filter((type) =>
-      typeFilter ? type.type.name === typeFilter : true
-    );
+    const typeHasTypeValue =
+      result?.pokemon?.types?.filter((type) =>
+        typeFilter ? type?.type?.name === typeFilter : true
+      )?.length ?? true;
     const speciesHasSpeciesValue =
-      result.pokemon.species.genera.filter((genera) =>
-        speciesFilter ? genera.genus === speciesFilter : true
-      );
+      result?.pokemon?.species?.genera?.filter((genera) =>
+        speciesFilter ? genera?.genus === speciesFilter : true
+      )?.length ?? true;
 
     return (
-      nameHasSearchValue &&
-      typeHasTypeValue.length &&
-      speciesHasSpeciesValue.length
+      nameHasSearchValue && typeHasTypeValue && speciesHasSpeciesValue
     );
   });
 
@@ -69,19 +85,31 @@ function Pokedex(props: PokedexProps) {
             className="border border-black rounded px-2 py-1"
           />
         </div>
+        <div className="flex justify-center text-sm">
+          <p>
+            {filteredResults.length} of {count} loaded
+          </p>
+          <button
+            onClick={() =>
+              getMorePokemon({ variables: { url: nextLink } })
+            }
+          >
+            GET MORE
+          </button>
+        </div>
+        <SortByDropdown setSortBy={setSortBy} />
         <Filters
-          results={results}
+          results={loadedPokemon}
           setTypeFilter={setTypeFilter}
           setSpeciesFilter={setSpeciesFilter}
         />
-        <SortByDropdown setSortBy={setSortBy} />
         <div>
           {selectedPokemon && (
             <SelectedPokemon selectedPokemon={selectedPokemon} />
           )}
         </div>
       </div>
-      <div className="h-[450px] w-[500px] p-4 grid grid-cols-2 lg:grid-cols-3 gap-8 overflow-y-auto m-auto lg:m-0">
+      <div className="h-[750px] w-[500px] p-4 grid grid-cols-2 lg:grid-cols-3 gap-8 overflow-y-auto m-auto lg:m-0">
         {filteredResults.length === 0 ? (
           <p>No results found...</p>
         ) : (

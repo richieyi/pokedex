@@ -2,12 +2,14 @@ import { gql } from 'apollo-server-micro';
 
 export const typeDefs = gql`
   type Query {
-    allPokemon: AllPokemon!
+    getPokemon(url: String): GetPokemon!
   }
 
-  type AllPokemon {
-    results: [Result!]!
+  type GetPokemon {
     count: Int!
+    next: String
+    previous: String
+    results: [Result!]!
   }
 
   type Result {

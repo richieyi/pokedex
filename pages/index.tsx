@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import client from 'graphql/apollo-client';
 import Pokedex from '@/components/Pokedex';
-import { GET_ALL_POKEMON } from 'graphql/queries';
+import { GET_POKEMON } from 'graphql/queries';
+import ClientOnly from '@/components/ClientOnly';
 
 export async function getServerSideProps() {
   const { data } = await client.query({
-    query: GET_ALL_POKEMON,
+    query: GET_POKEMON,
   });
 
   return {
@@ -18,7 +19,7 @@ export async function getServerSideProps() {
 export default function Home(props: any) {
   const {
     data: {
-      allPokemon: { results },
+      getPokemon: { results, count, next },
     },
   } = props;
 
@@ -30,7 +31,9 @@ export default function Home(props: any) {
       </Head>
 
       <main>
-        <Pokedex results={results} />
+        <ClientOnly>
+          <Pokedex results={results} count={count} next={next} />
+        </ClientOnly>
       </main>
     </div>
   );

@@ -9,7 +9,11 @@ function PokemonList(props: any) {
       className="flex flex-col items-center hover:cursor-pointer"
       onClick={() => setSelectedPokemon(result.pokemon)}
     >
-      <img src={result.pokemon.sprites.front_default} />
+      <img
+        src={result.pokemon.sprites.front_default}
+        width="48"
+        height="48"
+      />
       <p className="text-sm">
         {`#${result.pokemon.id}. ${result.pokemon.name}`}
       </p>
