@@ -6,33 +6,45 @@ import { Pokemon, Result } from '../../pokemon-types';
 import SortByDropdown from '../SortByDropdown';
 import BarChart from '../BarChart';
 import { GET_POKEMON } from 'graphql/queries';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import {
   getFilteredResults,
-  getLoadButtonText,
   getSortedResults,
   getSpecies,
   getTypes,
 } from 'utils';
 import LoadMore from '../LoadMore';
 
-interface PokedexProps {
-  results: Result[];
-  count: number;
-  next?: string;
-}
-
-function Pokedex(props: PokedexProps) {
-  const { results, count, next } = props;
-  const [loadedPokemon, setLoadedPokemon] =
-    useState<Result[]>(results);
-  const [nextLink, setNextLink] = useState<string | undefined>(next);
+function Pokedex() {
+  const {
+    data: initialData,
+    loading: initialLoading,
+    error: initialError,
+  } = useQuery(GET_POKEMON);
   const [getMorePokemon, { data, loading, error }] =
     useLazyQuery(GET_POKEMON);
 
+  const [loadedPokemon, setLoadedPokemon] = useState<Result[]>([]);
+  const [nextLink, setNextLink] = useState<string | undefined>();
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [selectedPokemon, setSelectedPokemon] =
+    useState<Pokemon | null>(null);
+  const [typeFilter, setTypeFilter] = useState<string>('');
+  const [speciesFilter, setSpeciesFilter] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('id asc');
+
+  useEffect(() => {
+    if (initialData && !initialLoading && !initialError) {
+      setLoadedPokemon(initialData?.getPokemon?.results);
+      setNextLink(initialData?.getPokemon?.next);
+      setSelectedPokemon(
+        initialData?.getPokemon?.results?.[0]?.pokemon
+      );
+    }
+  }, [initialLoading]);
+
   useEffect(() => {
     if (data && !loading && !error) {
-      // BUG: Prevent spreading next data set without new pokemon
       if (data?.getPokemon?.next !== nextLink) {
         setLoadedPokemon((loadedPokemon) => {
           return [...loadedPokemon, ...data?.getPokemon?.results];
@@ -41,14 +53,6 @@ function Pokedex(props: PokedexProps) {
       }
     }
   }, [loading]);
-
-  const [searchValue, setSearchValue] = useState<string>('');
-  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon>(
-    loadedPokemon[0].pokemon
-  );
-  const [typeFilter, setTypeFilter] = useState<string>('');
-  const [speciesFilter, setSpeciesFilter] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('id asc');
 
   const filteredResults = getFilteredResults(
     loadedPokemon,
@@ -70,6 +74,9 @@ function Pokedex(props: PokedexProps) {
 
   const speciesMapped = getSpecies(loadedPokemon);
   const speciesKeys = Object.keys(speciesMapped);
+
+  if (initialLoading) return <p>Loading...</p>;
+  if (initialError) return <p>Error...</p>;
 
   return (
     <div className="bg-white flex flex-col gap-16 text-sm lg:text-base border rounded p-8 shadow-xl">
@@ -95,8 +102,8 @@ function Pokedex(props: PokedexProps) {
             setSpeciesFilter={setSpeciesFilter}
           />
           <LoadMore
-            loadedPokemon={loadedPokemon}
-            count={count}
+            loadedPokemonLength={loadedPokemon?.length}
+            count={initialData?.getPokemon?.count}
             getMorePokemon={getMorePokemon}
             nextLink={nextLink}
             loading={loading}

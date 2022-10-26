@@ -3,7 +3,7 @@ import React from 'react';
 import { getLoadButtonText } from 'utils';
 
 interface LoadMoreProps {
-  loadedPokemon: Result[];
+  loadedPokemonLength: number;
   count: number;
   getMorePokemon: ({}) => {};
   nextLink: string | undefined;
@@ -11,19 +11,27 @@ interface LoadMoreProps {
 }
 
 function LoadMore(props: LoadMoreProps) {
-  const { loadedPokemon, count, getMorePokemon, nextLink, loading } =
-    props;
+  const {
+    loadedPokemonLength,
+    count,
+    getMorePokemon,
+    nextLink,
+    loading,
+  } = props;
+
+  console.log('p', props);
+
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm text-center">
-        {loadedPokemon.length} of {count} loaded
+        {loadedPokemonLength} of {count} loaded
       </p>
       <button
         onClick={() =>
           getMorePokemon({ variables: { url: nextLink } })
         }
         disabled={
-          loading || !nextLink || loadedPokemon.length === count
+          loading || !nextLink || loadedPokemonLength === count
         }
         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg"
       >

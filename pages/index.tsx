@@ -5,29 +5,7 @@ import { GET_POKEMON } from 'graphql/queries';
 import ClientOnly from '@/components/ClientOnly';
 import { Data } from 'pokemon-types';
 
-export async function getServerSideProps() {
-  const { data } = await client.query({
-    query: GET_POKEMON,
-  });
-
-  return {
-    props: {
-      data,
-    },
-  };
-}
-
-interface HomeProps {
-  data: Data;
-}
-
-export default function Home(props: HomeProps) {
-  const {
-    data: {
-      getPokemon: { results, count, next },
-    },
-  } = props;
-
+export default function Home() {
   return (
     <div>
       <Head>
@@ -37,7 +15,7 @@ export default function Home(props: HomeProps) {
 
       <main>
         <ClientOnly>
-          <Pokedex results={results} count={count} next={next} />
+          <Pokedex />
         </ClientOnly>
       </main>
     </div>
