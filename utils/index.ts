@@ -1,4 +1,10 @@
-import { Genera, Result, Type } from 'pokemon-types';
+import {
+  Genera,
+  Result,
+  SpeciesHash,
+  Type,
+  TypesHash,
+} from 'pokemon-types';
 
 export const nameHasSearchValue = (
   pokemonName: string,
@@ -75,4 +81,44 @@ export const getSortedResults = (
   }
 
   return [];
+};
+
+export const getTypes = (loadedPokemon: Result[]) => {
+  const typesHash: TypesHash = {};
+
+  loadedPokemon.map((result: Result) => {
+    const { types } = result.pokemon;
+    types.forEach((type: Type) => {
+      const elementName = type.type.name;
+
+      if (typesHash[elementName] !== undefined) {
+        typesHash[elementName] += 1;
+      } else {
+        typesHash[elementName] = 0;
+      }
+    });
+  });
+
+  return typesHash;
+};
+
+export const getSpecies = (loadedPokemon: Result[]) => {
+  const speciesHash: SpeciesHash = {};
+
+  loadedPokemon.map((result: Result) => {
+    const { genera } = result.pokemon.species;
+    genera.forEach((genera: Genera) => {
+      const { genus, language } = genera;
+
+      if (language.name === 'en') {
+        if (speciesHash[genus] !== undefined) {
+          speciesHash[genus] += 1;
+        } else {
+          speciesHash[genus] = 0;
+        }
+      }
+    });
+  });
+
+  return speciesHash;
 };

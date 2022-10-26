@@ -16,15 +16,17 @@ function SelectedPokemon(props: SelectedPokemonProps) {
         <p>{`#${id}. ${name}`}</p>
         <img src={sprites.front_default} width="96" height="96" />
       </div>
-      <div className="flex justify-between">
-        <div className="ml-8">
+      <div className="flex flex-row justify-between gap-2">
+        <div>
           <p>Stats</p>
           <p>{`${stats?.[0]?.base_stat} ${stats?.[0]?.stat.name}`}</p>
         </div>
-        <div className="mr-8">
+        <div>
           <p>Types</p>
-          {types.map(({ type }: any) => (
-            <p key={type.name}>{type.name}</p>
+          {types.map(({ type }: any, idx) => (
+            <p key={type.name}>{`${type.name}${
+              idx !== types.length - 1 ? ',' : ''
+            }`}</p>
           ))}
         </div>
       </div>

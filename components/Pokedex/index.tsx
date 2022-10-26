@@ -2,11 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Filters from '../Filters';
 import PokemonList from '../PokemonList';
 import SelectedPokemon from '../SelectedPokemon';
-import { Pokemon, Result } from '../../pokemon-types';
+import { Genera, Pokemon, Result, Type } from '../../pokemon-types';
 import SortByDropdown from '../SortByDropdown';
+import BarChart from '../BarChart';
 import { GET_POKEMON } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
-import { getFilteredResults, getSortedResults } from 'utils';
+import {
+  getFilteredResults,
+  getSortedResults,
+  getSpecies,
+  getTypes,
+} from 'utils';
 
 interface PokedexProps {
   results: Result[];
@@ -50,47 +56,63 @@ function Pokedex(props: PokedexProps) {
 
   const sortedList = getSortedResults(sortBy, filteredResults);
 
+  const typesMapped = getTypes(loadedPokemon);
+  const typesKeys = Object.keys(typesMapped);
+  const typesMappedForData = Object.entries(typesMapped).map(
+    (key) => ({
+      name: key[0],
+      count: key[1],
+    })
+  );
+
+  const speciesMapped = getSpecies(loadedPokemon);
+  const speciesKeys = Object.keys(speciesMapped);
+
   return (
-    <div className="container flex flex-col lg:flex-row px-8 lg:justify-center gap-4">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl text-center">Pokédex</h1>
-          <input
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search by name..."
-            className="border border-black rounded px-2 py-1"
+    <div className="flex flex-col gap-16 text-sm lg:text-base">
+      <div className="flex flex-row px-8 gap-4">
+        <div className="flex flex-col gap-4 max-w-[150px] lg:max-w-[300px]">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl text-center">Pokédex</h1>
+            <input
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search by name..."
+              className="border border-black rounded px-2 py-1"
+            />
+          </div>
+          <div className="flex flex-col">
+            <p className="text-sm text-center">
+              {loadedPokemon.length} of {count} loaded
+            </p>
+            <button
+              onClick={() =>
+                getMorePokemon({ variables: { url: nextLink } })
+              }
+              disabled={loading}
+              className="border border-black disabled:hover:cursor-not-allowed"
+            >
+              {loading ? 'Loading...' : 'Load More Pokemon'}
+            </button>
+          </div>
+          <SortByDropdown setSortBy={setSortBy} />
+          <Filters
+            typesKeys={typesKeys}
+            speciesKeys={speciesKeys}
+            setTypeFilter={setTypeFilter}
+            setSpeciesFilter={setSpeciesFilter}
           />
+          {selectedPokemon && (
+            <SelectedPokemon selectedPokemon={selectedPokemon} />
+          )}
         </div>
-        <div className="flex flex-col">
-          <p className="text-sm text-center">
-            {loadedPokemon.length} of {count} loaded
-          </p>
-          <button
-            onClick={() =>
-              getMorePokemon({ variables: { url: nextLink } })
-            }
-            disabled={loading}
-            className="border border-black disabled:hover:cursor-not-allowed"
-          >
-            {loading ? 'Loading...' : 'Load More Pokemon'}
-          </button>
-        </div>
-        <SortByDropdown setSortBy={setSortBy} />
-        <Filters
-          loadedPokemon={loadedPokemon}
-          setTypeFilter={setTypeFilter}
-          setSpeciesFilter={setSpeciesFilter}
+        <PokemonList
+          pokemonList={sortedList}
+          setSelectedPokemon={setSelectedPokemon}
+          filteredResultsLength={filteredResults?.length}
         />
-        {selectedPokemon && (
-          <SelectedPokemon selectedPokemon={selectedPokemon} />
-        )}
       </div>
-      <PokemonList
-        pokemonList={sortedList}
-        setSelectedPokemon={setSelectedPokemon}
-        filteredResultsLength={filteredResults?.length}
-      />
+      <BarChart data={typesMappedForData} />
     </div>
   );
 }

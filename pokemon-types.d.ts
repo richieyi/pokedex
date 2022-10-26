@@ -53,3 +53,6 @@ interface ElementType {
 interface Sprite {
   front_default: string;
 }
+
+export type TypesHash = Record<string, number>;
+export type SpeciesHash = Record<string, number>;
