@@ -1,5 +1,6 @@
-import { Pokemon } from 'pokemon-types';
+import { Pokemon, Type } from 'pokemon-types';
 import React from 'react';
+import { ReferenceArea } from 'recharts';
 
 interface SelectedPokemonProps {
   selectedPokemon: Pokemon;
@@ -11,23 +12,29 @@ function SelectedPokemon(props: SelectedPokemonProps) {
   } = props;
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4 p-4 border rounded shadow-lg">
       <div className="flex flex-col items-center">
         <p>{`#${id}. ${name}`}</p>
         <img src={sprites.front_default} width="96" height="96" />
       </div>
-      <div className="flex flex-row justify-between gap-2">
+      <div className="flex flex-col gap-2">
         <div>
-          <p>Stats</p>
-          <p>{`${stats?.[0]?.base_stat} ${stats?.[0]?.stat.name}`}</p>
+          <p>
+            Stats:{' '}
+            <span>
+              {`${stats?.[0]?.base_stat} ${stats?.[0]?.stat.name}`}
+            </span>
+          </p>
         </div>
         <div>
-          <p>Types</p>
-          {types.map(({ type }: any, idx) => (
-            <p key={type.name}>{`${type.name}${
-              idx !== types.length - 1 ? ',' : ''
-            }`}</p>
-          ))}
+          <p>
+            Types:{' '}
+            {types.map(({ type }: Type, idx) => (
+              <span key={type.name}>{`${type.name}${
+                idx !== types.length - 1 ? ', ' : ''
+              }`}</span>
+            ))}
+          </p>
         </div>
       </div>
     </div>

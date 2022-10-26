@@ -122,3 +122,16 @@ export const getSpecies = (loadedPokemon: Result[]) => {
 
   return speciesHash;
 };
+
+export const getLoadButtonText = (
+  loading: boolean,
+  nextLink: string | undefined
+) => {
+  if (loading) {
+    return 'Loading...';
+  } else if (!nextLink) {
+    return 'All data loaded';
+  }
+
+  return 'Load more Pokemon';
+};

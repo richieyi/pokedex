@@ -11,7 +11,7 @@ function SortByDropdown(props: SortByDropdownProps) {
 
   return (
     <div className="flex flex-col">
-      <p>Sort By</p>
+      <h1 className="text-xl text-center">Sort By</h1>
       <select>
         {options.map((option, idx) => (
           <option key={idx} onClick={() => setSortBy(option)}>

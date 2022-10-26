@@ -55,11 +55,15 @@ function Filters(props: FiltersProps) {
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-xl text-center">Filters</h1>
-      <p>Types</p>
-      {renderTypesDropdown()}
-      <p>Species</p>
-      {renderSpeciesDropdown()}
+      <h1 className="text-xl text-center">Filter By</h1>
+      <div className="flex flex-col gap-1">
+        <p>Types</p>
+        {renderTypesDropdown()}
+      </div>
+      <div className="flex flex-col gap-1">
+        <p>Species</p>
+        {renderSpeciesDropdown()}
+      </div>
     </div>
   );
 }

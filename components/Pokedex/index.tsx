@@ -2,17 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Filters from '../Filters';
 import PokemonList from '../PokemonList';
 import SelectedPokemon from '../SelectedPokemon';
-import { Genera, Pokemon, Result, Type } from '../../pokemon-types';
+import { Pokemon, Result } from '../../pokemon-types';
 import SortByDropdown from '../SortByDropdown';
 import BarChart from '../BarChart';
 import { GET_POKEMON } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 import {
   getFilteredResults,
+  getLoadButtonText,
   getSortedResults,
   getSpecies,
   getTypes,
 } from 'utils';
+import LoadMore from '../LoadMore';
 
 interface PokedexProps {
   results: Result[];
@@ -41,8 +43,9 @@ function Pokedex(props: PokedexProps) {
   }, [loading]);
 
   const [searchValue, setSearchValue] = useState<string>('');
-  const [selectedPokemon, setSelectedPokemon] =
-    useState<Pokemon | null>(null);
+  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon>(
+    loadedPokemon[0].pokemon
+  );
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [speciesFilter, setSpeciesFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('id asc');
@@ -69,32 +72,21 @@ function Pokedex(props: PokedexProps) {
   const speciesKeys = Object.keys(speciesMapped);
 
   return (
-    <div className="flex flex-col gap-16 text-sm lg:text-base">
-      <div className="flex flex-row px-8 gap-4">
-        <div className="flex flex-col gap-4 max-w-[150px] lg:max-w-[300px]">
+    <div className="bg-white flex flex-col gap-16 text-sm lg:text-base border rounded p-8 shadow-xl">
+      <div className="flex flex-row justify-between gap-4">
+        <div className="flex flex-col gap-4 max-w-[150px] lg:max-w-none">
           <div className="flex flex-col gap-2">
             <h1 className="text-2xl text-center">Pokédex</h1>
             <input
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search by name..."
-              className="border border-black rounded px-2 py-1"
+              className="border border-black rounded px-4 py-2 text-sm shadow-lg"
             />
           </div>
-          <div className="flex flex-col">
-            <p className="text-sm text-center">
-              {loadedPokemon.length} of {count} loaded
-            </p>
-            <button
-              onClick={() =>
-                getMorePokemon({ variables: { url: nextLink } })
-              }
-              disabled={loading}
-              className="border border-black disabled:hover:cursor-not-allowed"
-            >
-              {loading ? 'Loading...' : 'Load More Pokemon'}
-            </button>
-          </div>
+          {selectedPokemon && (
+            <SelectedPokemon selectedPokemon={selectedPokemon} />
+          )}
           <SortByDropdown setSortBy={setSortBy} />
           <Filters
             typesKeys={typesKeys}
@@ -102,9 +94,13 @@ function Pokedex(props: PokedexProps) {
             setTypeFilter={setTypeFilter}
             setSpeciesFilter={setSpeciesFilter}
           />
-          {selectedPokemon && (
-            <SelectedPokemon selectedPokemon={selectedPokemon} />
-          )}
+          <LoadMore
+            loadedPokemon={loadedPokemon}
+            count={count}
+            getMorePokemon={getMorePokemon}
+            nextLink={nextLink}
+            loading={loading}
+          />
         </div>
         <PokemonList
           pokemonList={sortedList}

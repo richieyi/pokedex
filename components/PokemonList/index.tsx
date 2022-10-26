@@ -12,7 +12,7 @@ function PokemonList(props: PokemonListProps) {
     props;
 
   function renderList() {
-    return pokemonList?.map((result: any) => (
+    return pokemonList?.map((result: Result) => (
       <div
         key={result.pokemon.name}
         className="flex flex-col items-center hover:cursor-pointer h-[100px]"

@@ -40,7 +40,7 @@ export const typeDefs = gql`
   }
 
   type Sprite {
-    front_default: String!
+    front_default: String
   }
 
   type Stat {

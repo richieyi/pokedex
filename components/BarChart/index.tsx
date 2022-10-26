@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 
 interface BarChartProps {
-  data: any;
+  data: { name: string; count: number }[];
 }
 
 function BarChart(props: BarChartProps) {

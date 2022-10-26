@@ -7,7 +7,7 @@ export const resolvers = {
     getPokemon: async (_: undefined, args: { url: string }) => {
       const res = args.url
         ? await fetch(args.url)
-        : await fetch(`${BASE_URL}/pokemon?limit=30`);
+        : await fetch(`${BASE_URL}/pokemon?limit=120`);
       const data = await res.json();
       return data;
     },
