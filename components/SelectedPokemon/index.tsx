@@ -17,7 +17,7 @@ function SelectedPokemon(props: SelectedPokemonProps) {
         <p>{`#${id}. ${name}`}</p>
         <img src={sprites.front_default} width="96" height="96" />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 text-sm">
         <div>
           <p>
             Stats:{' '}

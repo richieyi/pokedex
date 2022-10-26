@@ -62,20 +62,21 @@ export const getSortedResults = (
   sortBy: string,
   filteredResults: Result[]
 ) => {
+  const copy = [...filteredResults];
   if (sortBy === 'id asc') {
-    return filteredResults.sort((a, b) => {
+    return copy.sort((a, b) => {
       return Number(a.pokemon.id) - Number(b.pokemon.id);
     });
   } else if (sortBy === 'id desc') {
-    return filteredResults.sort((a, b) => {
+    return copy.sort((a, b) => {
       return Number(b.pokemon.id) - Number(a.pokemon.id);
     });
   } else if (sortBy === 'name asc') {
-    return filteredResults.sort((a, b) => {
+    return copy.sort((a, b) => {
       return a.pokemon.name.localeCompare(b.pokemon.name);
     });
   } else if (sortBy === 'name desc') {
-    return filteredResults.sort((a, b) => {
+    return copy.sort((a, b) => {
       return b.pokemon.name.localeCompare(a.pokemon.name);
     });
   }
@@ -94,7 +95,7 @@ export const getTypes = (loadedPokemon: Result[]) => {
       if (typesHash[elementName] !== undefined) {
         typesHash[elementName] += 1;
       } else {
-        typesHash[elementName] = 0;
+        typesHash[elementName] = 1;
       }
     });
   });
@@ -114,7 +115,7 @@ export const getSpecies = (loadedPokemon: Result[]) => {
         if (speciesHash[genus] !== undefined) {
           speciesHash[genus] += 1;
         } else {
-          speciesHash[genus] = 0;
+          speciesHash[genus] = 1;
         }
       }
     });

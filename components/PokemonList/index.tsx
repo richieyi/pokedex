@@ -31,7 +31,7 @@ function PokemonList(props: PokemonListProps) {
   }
 
   return (
-    <div className="h-[600px] max-w-[500px] p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-y-scroll m-auto lg:m-0">
+    <div className="h-[600px] max-w-[500px] p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 overflow-y-scroll m-auto lg:m-0 shadow-lg border rounded">
       {filteredResultsLength === 0 ? (
         <p>No results found...</p>
       ) : (
