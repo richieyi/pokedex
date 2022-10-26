@@ -1,7 +1,14 @@
+import { Pokemon } from 'pokemon-types';
 import React from 'react';
 
-function SelectedPokemon(props: any) {
-  const { id, name, sprites, stats, types } = props?.selectedPokemon;
+interface SelectedPokemonProps {
+  selectedPokemon: Pokemon;
+}
+
+function SelectedPokemon(props: SelectedPokemonProps) {
+  const {
+    selectedPokemon: { id, name, sprites, stats, types },
+  } = props;
 
   return (
     <div className="flex flex-col gap-4 p-4">

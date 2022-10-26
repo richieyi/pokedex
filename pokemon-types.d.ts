@@ -1,3 +1,11 @@
+interface Data {
+  getPokemon: {
+    results: Result[];
+    count: number;
+    next: string;
+  };
+}
+
 export interface Result {
   url: string;
   pokemon: Pokemon;

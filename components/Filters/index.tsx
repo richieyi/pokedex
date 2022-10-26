@@ -1,22 +1,22 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Genera, Result, Type } from '../../pokemon-types';
 
 interface FiltersProps {
-  results: any;
-  setTypeFilter: any;
-  setSpeciesFilter: any;
+  loadedPokemon: Result[];
+  setTypeFilter: (typeFilter: string) => void;
+  setSpeciesFilter: (speciesFilter: string) => void;
 }
 
 type TypesHash = Record<string, any>;
 type SpeciesHash = Record<string, any>;
 
 function Filters(props: FiltersProps) {
-  const { results, setTypeFilter, setSpeciesFilter } = props;
+  const { loadedPokemon, setTypeFilter, setSpeciesFilter } = props;
 
   function getTypes() {
     const typesHash: TypesHash = {};
 
-    results.map((result: Result) => {
+    loadedPokemon.map((result: Result) => {
       const { types } = result.pokemon;
       types.forEach((type: Type) => {
         const elementName = type.type.name;
@@ -59,7 +59,7 @@ function Filters(props: FiltersProps) {
   function getSpecies() {
     const speciesHash: SpeciesHash = {};
 
-    results.map((result: Result) => {
+    loadedPokemon.map((result: Result) => {
       const { genera } = result.pokemon.species;
       genera.forEach((genera: Genera) => {
         const { genus, language } = genera;
