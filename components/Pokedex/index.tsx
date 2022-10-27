@@ -16,6 +16,7 @@ import {
 import LoadMore from '../LoadMore';
 import SearchInput from '../SearchInput';
 import Modal from '../Modal';
+import useDebounce from 'hooks/useDebounce';
 
 function Pokedex() {
   const {
@@ -26,18 +27,24 @@ function Pokedex() {
   const [getMorePokemon, { data, loading, error }] =
     useLazyQuery(GET_POKEMON);
 
+  // Modal states
   const [isPokemonModalOpen, setIsPokemonModalOpen] = useState(false);
   const [isChartModalOpen, setIsChartModalOpen] = useState(false);
-  const [loadedPokemon, setLoadedPokemon] = useState<Result[]>([]);
-  const [nextLink, setNextLink] = useState<string | undefined>();
-  const [searchValue, setSearchValue] = useState<string>('');
   const [selectedPokemon, setSelectedPokemon] =
     useState<Pokemon | null>(null);
+
+  // API data
+  const [loadedPokemon, setLoadedPokemon] = useState<Result[]>([]);
+  const [nextLink, setNextLink] = useState<string | undefined>();
+
+  // Search, filter, sort
+  const [searchValue, setSearchValue] = useState<string>('');
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [speciesFilter, setSpeciesFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>(options[0]);
 
   useEffect(() => {
+    // Handles initial data load
     if (initialData && !initialLoading && !initialError) {
       setLoadedPokemon(initialData?.getPokemon?.results);
       setNextLink(initialData?.getPokemon?.next);
@@ -48,6 +55,7 @@ function Pokedex() {
   }, [initialLoading]);
 
   useEffect(() => {
+    // Handles subsequent data loads
     if (data && !loading && !error) {
       if (data?.getPokemon?.next !== nextLink) {
         setLoadedPokemon((loadedPokemon) => {
@@ -58,6 +66,12 @@ function Pokedex() {
     }
   }, [loading]);
 
+  const debouncedValue = useDebounce(searchValue, 300);
+  // Debounce search input
+  useEffect(() => {
+    setSearchValue(debouncedValue);
+  }, [debouncedValue]);
+
   const handleSelect = (selectedPokemon: Pokemon) => {
     setSelectedPokemon(selectedPokemon);
     setIsPokemonModalOpen(true);
@@ -65,7 +79,7 @@ function Pokedex() {
 
   const filteredResults = getFilteredResults(
     loadedPokemon,
-    searchValue,
+    debouncedValue,
     typeFilter,
     speciesFilter
   );
@@ -137,11 +151,12 @@ function Pokedex() {
           <SelectedPokemon selectedPokemon={selectedPokemon} />
         </Modal>
       )}
-      <BarChart
-        data={typesMappedForData}
+      <Modal
         isOpen={isChartModalOpen}
         setIsOpen={setIsChartModalOpen}
-      />
+      >
+        <BarChart data={typesMappedForData} />
+      </Modal>
     </div>
   );
 }

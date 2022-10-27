@@ -21,7 +21,7 @@ function PokemonList(props: PokemonListProps) {
       return (
         <div
           key={name}
-          className="flex flex-col items-center hover:cursor-pointer rounded border py-4 px-1 bg-white shadow-sm"
+          className="flex flex-col items-center hover:cursor-pointer rounded border py-4 px-1 bg-white hover:bg-blue-200 ease-in-out transition-all shadow-sm"
           onClick={() => setSelectedPokemon(pokemon)}
         >
           <img
