@@ -1,3 +1,4 @@
+import { options } from '@/components/SortByDropdown';
 import {
   Genera,
   Result,
@@ -63,19 +64,19 @@ export const getSortedResults = (
   filteredResults: Result[]
 ) => {
   const copy = [...filteredResults];
-  if (sortBy === 'id asc') {
+  if (sortBy === options[0]) {
     return copy.sort((a, b) => {
       return Number(a.pokemon.id) - Number(b.pokemon.id);
     });
-  } else if (sortBy === 'id desc') {
+  } else if (sortBy === options[1]) {
     return copy.sort((a, b) => {
       return Number(b.pokemon.id) - Number(a.pokemon.id);
     });
-  } else if (sortBy === 'name asc') {
+  } else if (sortBy === options[2]) {
     return copy.sort((a, b) => {
       return a.pokemon.name.localeCompare(b.pokemon.name);
     });
-  } else if (sortBy === 'name desc') {
+  } else if (sortBy === options[3]) {
     return copy.sort((a, b) => {
       return b.pokemon.name.localeCompare(a.pokemon.name);
     });

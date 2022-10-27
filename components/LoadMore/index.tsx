@@ -19,10 +19,8 @@ function LoadMore(props: LoadMoreProps) {
     loading,
   } = props;
 
-  console.log('p', props);
-
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex items-center gap-2">
       <p className="text-sm text-center">
         {loadedPokemonLength} of {count} loaded
       </p>
@@ -33,7 +31,7 @@ function LoadMore(props: LoadMoreProps) {
         disabled={
           loading || !nextLink || loadedPokemonLength === count
         }
-        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg"
       >
         {getLoadButtonText(loading, nextLink)}
       </button>

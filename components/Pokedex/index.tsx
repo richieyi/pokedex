@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Filters from '../Filters';
 import PokemonList from '../PokemonList';
 import SelectedPokemon from '../SelectedPokemon';
 import { Pokemon, Result } from '../../pokemon-types';
-import SortByDropdown from '../SortByDropdown';
+import SortByDropdown, { options } from '../SortByDropdown';
 import BarChart from '../BarChart';
 import { GET_POKEMON } from 'graphql/queries';
 import { useLazyQuery, useQuery } from '@apollo/client';
@@ -14,6 +14,7 @@ import {
   getTypes,
 } from 'utils';
 import LoadMore from '../LoadMore';
+import SearchInput from '../SearchInput';
 
 function Pokedex() {
   const {
@@ -24,6 +25,8 @@ function Pokedex() {
   const [getMorePokemon, { data, loading, error }] =
     useLazyQuery(GET_POKEMON);
 
+  const [isPokemonModalOpen, setIsPokemonModalOpen] = useState(false);
+  const [isChartModalOpen, setIsChartModalOpen] = useState(false);
   const [loadedPokemon, setLoadedPokemon] = useState<Result[]>([]);
   const [nextLink, setNextLink] = useState<string | undefined>();
   const [searchValue, setSearchValue] = useState<string>('');
@@ -31,7 +34,7 @@ function Pokedex() {
     useState<Pokemon | null>(null);
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [speciesFilter, setSpeciesFilter] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('id asc');
+  const [sortBy, setSortBy] = useState<string>(options[0]);
 
   useEffect(() => {
     if (initialData && !initialLoading && !initialError) {
@@ -53,6 +56,11 @@ function Pokedex() {
       }
     }
   }, [loading]);
+
+  const handleSelect = (selectedPokemon: Pokemon) => {
+    setSelectedPokemon(selectedPokemon);
+    setIsPokemonModalOpen(true);
+  };
 
   const filteredResults = getFilteredResults(
     loadedPokemon,
@@ -79,28 +87,25 @@ function Pokedex() {
   if (initialError) return <p>Error...</p>;
 
   return (
-    <div className="bg-white flex flex-col gap-16 text-sm lg:text-base border rounded p-8 shadow-xl">
-      <div className="flex flex-row justify-between gap-4">
-        <div className="flex flex-col gap-4 max-w-[150px] lg:max-w-none">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl text-center">Pokédex</h1>
-            <input
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search by name..."
-              className="border border-black rounded px-4 py-2 text-sm shadow-lg"
-            />
-          </div>
-          {selectedPokemon && (
-            <SelectedPokemon selectedPokemon={selectedPokemon} />
-          )}
-          <SortByDropdown setSortBy={setSortBy} />
+    <div className="flex flex-col gap-16 text-sm lg:text-base relative">
+      <div className="flex flex-col items-center gap-2 fixed bg-gray-300 w-full left-0 py-2 lg:px-8 lg:py-4 shadow-md">
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl mb-1">Pokédex</h1>
+          <SearchInput
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
+        </div>
+        <div className="flex gap-2">
           <Filters
             typesKeys={typesKeys}
             speciesKeys={speciesKeys}
             setTypeFilter={setTypeFilter}
             setSpeciesFilter={setSpeciesFilter}
           />
+          <SortByDropdown setSortBy={setSortBy} />
+        </div>
+        <div className="flex gap-2">
           <LoadMore
             loadedPokemonLength={loadedPokemon?.length}
             count={initialData?.getPokemon?.count}
@@ -108,14 +113,33 @@ function Pokedex() {
             nextLink={nextLink}
             loading={loading}
           />
+          <button
+            onClick={() => setIsChartModalOpen(true)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg"
+          >
+            See Types Data
+          </button>
         </div>
+      </div>
+      <div className="mt-36 lg:mt-48">
         <PokemonList
           pokemonList={sortedList}
-          setSelectedPokemon={setSelectedPokemon}
+          setSelectedPokemon={handleSelect}
           filteredResultsLength={filteredResults?.length}
         />
       </div>
-      <BarChart data={typesMappedForData} />
+      {selectedPokemon && (
+        <SelectedPokemon
+          selectedPokemon={selectedPokemon}
+          isOpen={isPokemonModalOpen}
+          setIsOpen={setIsPokemonModalOpen}
+        />
+      )}
+      <BarChart
+        data={typesMappedForData}
+        isOpen={isChartModalOpen}
+        setIsOpen={setIsChartModalOpen}
+      />
     </div>
   );
 }
