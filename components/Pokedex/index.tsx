@@ -15,6 +15,7 @@ import {
 } from 'utils';
 import LoadMore from '../LoadMore';
 import SearchInput from '../SearchInput';
+import Modal from '../Modal';
 
 function Pokedex() {
   const {
@@ -107,7 +108,7 @@ function Pokedex() {
         </div>
         <div className="flex gap-2">
           <LoadMore
-            loadedPokemonLength={loadedPokemon?.length}
+            loadedPokemonCount={loadedPokemon?.length}
             count={initialData?.getPokemon?.count}
             getMorePokemon={getMorePokemon}
             nextLink={nextLink}
@@ -115,7 +116,7 @@ function Pokedex() {
           />
           <button
             onClick={() => setIsChartModalOpen(true)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg hidden lg:block"
           >
             See Types Data
           </button>
@@ -129,11 +130,12 @@ function Pokedex() {
         />
       </div>
       {selectedPokemon && (
-        <SelectedPokemon
-          selectedPokemon={selectedPokemon}
+        <Modal
           isOpen={isPokemonModalOpen}
           setIsOpen={setIsPokemonModalOpen}
-        />
+        >
+          <SelectedPokemon selectedPokemon={selectedPokemon} />
+        </Modal>
       )}
       <BarChart
         data={typesMappedForData}

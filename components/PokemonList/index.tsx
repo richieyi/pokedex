@@ -12,26 +12,35 @@ function PokemonList(props: PokemonListProps) {
     props;
 
   function renderList() {
-    return pokemonList?.map((result: Result) => (
-      <div
-        key={result.pokemon.name}
-        className="flex flex-col items-center hover:cursor-pointer rounded border py-4 px-1 bg-white shadow-sm"
-        onClick={() => setSelectedPokemon(result.pokemon)}
-      >
-        <img
-          src={result.pokemon.sprites.front_default}
-          width="96"
-          height="96"
-        />
-        <p className="text-sm">
-          {`#${result.pokemon.id}. ${result.pokemon.name}`}
-        </p>
-      </div>
-    ));
+    return pokemonList?.map((result: Result) => {
+      const {
+        pokemon,
+        pokemon: { name, sprites, id },
+      } = result;
+
+      return (
+        <div
+          key={name}
+          className="flex flex-col items-center hover:cursor-pointer rounded border py-4 px-1 bg-white shadow-sm"
+          onClick={() => setSelectedPokemon(pokemon)}
+        >
+          <img
+            src={sprites.front_default}
+            width="96"
+            height="96"
+            alt={`${name} image`}
+          />
+          <p className="text-sm">{`#${id}. ${name}`}</p>
+        </div>
+      );
+    });
   }
 
   return (
-    <div className="p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 m-auto lg:m-0">
+    <div
+      data-testid="pokemonList"
+      className="p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 m-auto lg:m-0"
+    >
       {filteredResultsLength === 0 ? (
         <p>No results found...</p>
       ) : (

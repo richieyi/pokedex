@@ -1,9 +1,8 @@
-import { Result } from 'pokemon-types';
 import React from 'react';
-import { getLoadButtonText } from 'utils';
+import { getLoadButtonText } from '../../utils';
 
 interface LoadMoreProps {
-  loadedPokemonLength: number;
+  loadedPokemonCount: number;
   count: number;
   getMorePokemon: ({}) => {};
   nextLink: string | undefined;
@@ -12,25 +11,25 @@ interface LoadMoreProps {
 
 function LoadMore(props: LoadMoreProps) {
   const {
-    loadedPokemonLength,
+    loadedPokemonCount,
     count,
     getMorePokemon,
     nextLink,
     loading,
   } = props;
+  const isDisabled =
+    loading || !nextLink || loadedPokemonCount === count;
 
   return (
-    <div className="flex items-center gap-2">
+    <div data-testid="loadMore" className="flex items-center gap-2">
       <p className="text-sm text-center">
-        {loadedPokemonLength} of {count} loaded
+        {loadedPokemonCount} of {count} loaded
       </p>
       <button
         onClick={() =>
           getMorePokemon({ variables: { url: nextLink } })
         }
-        disabled={
-          loading || !nextLink || loadedPokemonLength === count
-        }
+        disabled={isDisabled}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-grey-500 disabled:hover:bg-grey-500 shadow-lg"
       >
         {getLoadButtonText(loading, nextLink)}
