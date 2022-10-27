@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../graphql/resolvers';
+import { BASE_URL } from '../graphql/resolvers';
 import {
   getFilteredResults,
   getLoadButtonText,
@@ -8,8 +8,9 @@ import {
   nameHasSearchValue,
   speciesHasSpeciesFilterValue,
   typesHasTypeFilterValue,
-} from '../';
-import { loadedPokemon } from '../constants';
+} from '../utils';
+import { loadedPokemon } from '../utils/constants';
+import { options } from '../components/SortByDropdown';
 
 describe('getLoadButtonText()', () => {
   it('should return loading text when loading', () => {
@@ -129,20 +130,19 @@ describe('getFilteredResults()', () => {
 });
 
 describe('getSortedResults()', () => {
-  it('should get sorted results by sort type', () => {
-    const sortedResults1 = getSortedResults('id desc', loadedPokemon);
-    expect(sortedResults1).toEqual([
-      loadedPokemon[1],
+  it('should get sorted results by id ascending', () => {
+    const sortedResults = getSortedResults(options[0], loadedPokemon);
+    expect(sortedResults).toEqual([
       loadedPokemon[0],
+      loadedPokemon[1],
     ]);
+  });
 
-    const sortedResults2 = getSortedResults(
-      'name asc',
-      loadedPokemon
-    );
-    expect(sortedResults2).toEqual([
-      loadedPokemon[0],
+  it('should get sorted results by name descending', () => {
+    const sortedResults = getSortedResults(options[3], loadedPokemon);
+    expect(sortedResults).toEqual([
       loadedPokemon[1],
+      loadedPokemon[0],
     ]);
   });
 });

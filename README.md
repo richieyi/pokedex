@@ -1,29 +1,15 @@
-# Next.js + Jest
+# Pokedex
 
-This example shows how to configure Jest to work with Next.js.
+Fun little Pokedex project that allows you to search by name or filter by species/type.
 
-This includes Next.js' built-in support for Global CSS, CSS Modules and TypeScript.
+## Tools
 
-## How to Use
+* Next.js - allows for API routes for a GraphQL server
+* Jest/React Testing Library - unit/integration testing
+* Headless UI - faster component building
+* Tailwiind - CSS in JS solution
+* Recharts - easy data visualization
 
-Quickly get started using [Create Next App](https://github.com/vercel/next.js/tree/canary/packages/create-next-app#readme)!
+## How to use it
 
-In your terminal, run the following command:
-
-```bash
-npx create-next-app --example with-jest with-jest-app
-```
-
-```bash
-yarn create next-app --example with-jest with-jest-app
-```
-
-```bash
-pnpm create next-app --example with-jest with-jest-app
-```
-
-## Run Jest Tests
-
-```bash
-npm test
-```
+Visit [this](https://pokedex-zeta-sage.vercel.app/) link.
