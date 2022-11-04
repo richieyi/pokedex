@@ -16,5 +16,9 @@ export default function ClientOnly({
     return null;
   }
 
-  return <div {...delegated}>{children}</div>;
+  return (
+    <div className="w-full" {...delegated}>
+      {children}
+    </div>
+  );
 }

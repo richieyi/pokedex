@@ -26,8 +26,8 @@ function PokemonList(props: PokemonListProps) {
         >
           <img
             src={sprites.front_default}
-            width="96"
-            height="96"
+            width="100%"
+            height="auto"
             alt={`${name} image`}
           />
           <p className="text-sm">{`#${id}. ${name}`}</p>
